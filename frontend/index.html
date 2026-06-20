@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>College ERP System</title>
+    <meta name="description" content="College ERP System - ADBMS Academic Project for managing Students, Faculty, Courses, Attendance and Fees." />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+    <div class="header-top container">
+        <h1>&#127979; College ERP System</h1>
+        <span>ADBMS Academic Project</span>
+    </div>
+    <nav class="container" id="mainNav">
+        <a href="#" class="nav-link active" data-page="home">Home</a>
+        <a href="#" class="nav-link" data-page="students">Students</a>
+        <a href="#" class="nav-link" data-page="faculty">Faculty</a>
+        <a href="#" class="nav-link" data-page="courses">Courses</a>
+        <a href="#" class="nav-link" data-page="attendance">Attendance</a>
+        <a href="#" class="nav-link" data-page="fees">Fees</a>
+    </nav>
+</header>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+
+    <!-- ================= HOME PAGE ================= -->
+    <div class="page active" id="page-home">
+        <div class="card">
+            <h2>Welcome to the College ERP System</h2>
+            <p class="text-muted">Use the navigation bar above or the quick links below to manage college data.</p>
+
+            <div class="home-grid">
+                <div class="home-card" onclick="navigate('students')">
+                    <span class="icon">&#128100;</span>
+                    <h3>Students</h3>
+                    <p>Add, edit, delete and view student records</p>
+                </div>
+                <div class="home-card" onclick="navigate('faculty')">
+                    <span class="icon">&#128104;&#8205;&#127979;</span>
+                    <h3>Faculty</h3>
+                    <p>Manage faculty information and departments</p>
+                </div>
+                <div class="home-card" onclick="navigate('courses')">
+                    <span class="icon">&#128218;</span>
+                    <h3>Courses</h3>
+                    <p>Add and manage courses with assigned faculty</p>
+                </div>
+                <div class="home-card" onclick="navigate('attendance')">
+                    <span class="icon">&#9989;</span>
+                    <h3>Attendance</h3>
+                    <p>Mark and view student attendance records</p>
+                </div>
+                <div class="home-card" onclick="navigate('fees')">
+                    <span class="icon">&#128176;</span>
+                    <h3>Fees</h3>
+                    <p>Track fee payments and pending dues</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= STUDENTS PAGE ================= -->
+    <div class="page" id="page-students">
+
+        <!-- Add / Edit Form -->
+        <div class="card" id="studentFormCard">
+            <h2 id="studentFormTitle">Add New Student</h2>
+            <div id="studentAlert" class="alert"></div>
+
+            <form id="studentForm" onsubmit="submitStudentForm(event)">
+                <input type="hidden" id="studentId" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sName">Name <span style="color:red">*</span></label>
+                        <input type="text" id="sName" placeholder="Full name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="sEmail">Email <span style="color:red">*</span></label>
+                        <input type="email" id="sEmail" placeholder="student@email.com" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sPhone">Phone</label>
+                        <input type="text" id="sPhone" placeholder="10-digit number" />
+                    </div>
+                    <div class="form-group">
+                        <label for="sSemester">Semester <span style="color:red">*</span></label>
+                        <select id="sSemester" required>
+                            <option value="">-- Select --</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sDept">Department <span style="color:red">*</span></label>
+                        <select id="sDept" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="studentSubmitBtn">Add Student</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelStudentEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Student Table -->
+        <div class="card">
+            <h2>All Students</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Semester</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <tr><td colspan="7" class="no-data">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FACULTY PAGE ================= -->
+    <div class="page" id="page-faculty">
+
+        <div class="card">
+            <h2 id="facultyFormTitle">Add New Faculty</h2>
+            <div id="facultyAlert" class="alert"></div>
+
+            <form id="facultyForm" onsubmit="submitFacultyForm(event)">
+                <input type="hidden" id="facultyId" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fName">Name <span style="color:red">*</span></label>
+                        <input type="text" id="fName" placeholder="Full name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="fEmail">Email <span style="color:red">*</span></label>
+                        <input type="email" id="fEmail" placeholder="faculty@college.edu" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="fDept">Department <span style="color:red">*</span></label>
+                        <select id="fDept" required>
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="facultySubmitBtn">Add Faculty</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelFacultyEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>All Faculty</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facultyTableBody">
+                        <tr><td colspan="5" class="no-data">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= COURSES PAGE ================= -->
+    <div class="page" id="page-courses">
+
+        <div class="card">
+            <h2 id="courseFormTitle">Add New Course</h2>
+            <div id="courseAlert" class="alert"></div>
+
+            <form id="courseForm" onsubmit="submitCourseForm(event)">
+                <input type="hidden" id="courseId" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cName">Course Name <span style="color:red">*</span></label>
+                        <input type="text" id="cName" placeholder="e.g. Database Management" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="cCredits">Credits <span style="color:red">*</span></label>
+                        <input type="number" id="cCredits" min="1" max="6" placeholder="e.g. 4" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="cFaculty">Faculty Assigned</label>
+                        <select id="cFaculty">
+                            <option value="">-- None --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="courseSubmitBtn">Add Course</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelCourseEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>All Courses</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Course Name</th>
+                            <th>Credits</th>
+                            <th>Faculty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courseTableBody">
+                        <tr><td colspan="5" class="no-data">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ATTENDANCE PAGE ================= -->
+    <div class="page" id="page-attendance">
+
+        <div class="card">
+            <h2>Mark Attendance</h2>
+            <div id="attendanceAlert" class="alert"></div>
+
+            <form id="attendanceForm" onsubmit="submitAttendanceForm(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="attStudent">Student <span style="color:red">*</span></label>
+                        <select id="attStudent" required>
+                            <option value="">-- Select Student --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="attCourse">Course <span style="color:red">*</span></label>
+                        <select id="attCourse" required>
+                            <option value="">-- Select Course --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="attDate">Date <span style="color:red">*</span></label>
+                        <input type="date" id="attDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="attStatus">Status <span style="color:red">*</span></label>
+                        <select id="attStatus" required>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">Mark Attendance</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Attendance Records</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                        <tr><td colspan="6" class="no-data">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FEES PAGE ================= -->
+    <div class="page" id="page-fees">
+
+        <div class="card">
+            <h2 id="feeFormTitle">Add Fee Record</h2>
+            <div id="feeAlert" class="alert"></div>
+
+            <form id="feeForm" onsubmit="submitFeeForm(event)">
+                <input type="hidden" id="feeId" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="feStudent">Student <span style="color:red">*</span></label>
+                        <select id="feStudent" required>
+                            <option value="">-- Select Student --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="feAmount">Amount (₹) <span style="color:red">*</span></label>
+                        <input type="number" id="feAmount" min="0" step="0.01" placeholder="e.g. 45000" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="feDate">Payment Date</label>
+                        <input type="date" id="feDate" />
+                    </div>
+                    <div class="form-group">
+                        <label for="feStatus">Status <span style="color:red">*</span></label>
+                        <select id="feStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="feeSubmitBtn">Add Fee Record</button>
+                    <button type="button" class="btn btn-secondary" onclick="cancelFeeEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Fee Records</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student</th>
+                            <th>Amount (₹)</th>
+                            <th>Payment Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feeTableBody">
+                        <tr><td colspan="6" class="no-data">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+    <p>College ERP System &mdash; ADBMS Academic Project &mdash; 2026</p>
+</footer>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script src="app.js"></script>
+
+</body>
+</html>
